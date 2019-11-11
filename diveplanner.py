@@ -2,12 +2,12 @@ import math
 
 
 # Dive Profile
-avg_depth = 30 # Feet
-psi_start = 3300 # PSI
-psi_end   = 1350 # PSI
-time      = 53 # Minutes
+avg_depth = 10.5 # Feet
+psi_start = 3588 # PSI
+psi_end   = 1362 # PSI
+time      = 102 # Minutes
 tank_type = 'hp100'
-o2Percent = .32
+o2Percent = .34
 
 
 class DiveCalculator:
@@ -46,7 +46,7 @@ class DiveCalculator:
 
   # Convert pressure to volume
   def pressureToVolume(self, pressure, type):
-    return pressure / 100 * self.tank_factors[type]
+    return float(pressure) / 100 * self.tank_factors[type]
 
   # Convert volume to pressure
   def volumeToPressure(self, volume, type):
@@ -87,10 +87,11 @@ dive_calculator = DiveCalculator()
 print 'Calculations based on:'
 print 'Avg Depth: ' + str(avg_depth) + ' feet'
 print 'Gas Used:  ' + str(psi_start - psi_end) + ' PSI'
+print 'Voume used:' + str(dive_calculator.pressureToVolume(psi_start-psi_end , tank_type))
 print 'Tank Type: ' + str.upper(tank_type)
 print 'Dive Time: ' + str(time) + ' minutes'
 print '**********************'
-print 'SCR:       ' + str(dive_calculator.calculateSCR(psi_start - psi_end, avg_depth, time, 'hp100'))
+print 'SCR:       ' + "{:.2f}".format(dive_calculator.calculateSCR(psi_start - psi_end, avg_depth, time, 'hp100')) + ' ft3/min'
 print '----'
 print ''
 
