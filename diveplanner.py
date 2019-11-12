@@ -7,7 +7,7 @@ psi_start = 3588 # PSI
 psi_end   = 1362 # PSI
 time      = 102 # Minutes
 tank_type = 'hp100'
-o2Percent = .34
+o2Percent = .32
 
 
 class DiveCalculator:
