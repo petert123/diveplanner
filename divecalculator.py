@@ -1,15 +1,5 @@
 import math
 
-
-# Dive Profile
-avg_depth = 10.5 # Feet
-psi_start = 3588 # PSI
-psi_end   = 1362 # PSI
-time      = 102 # Minutes
-tank_type = 'hp100'
-o2Percent = .32
-
-
 class DiveCalculator:
 
   min_gas_scr  = .75
@@ -32,9 +22,23 @@ class DiveCalculator:
                   'dlp104': 8,
               }
 
+  def getTankFactors(self):
+    return self.tank_factors
+
+  def getMinGasScr(self):
+    return self.min_gas_scr
+
   # Calculate SCR
-  def calculateSCR(self, gas_used, avg_depth, time, type):
-    return round(self.pressureToVolume(gas_used, type) / (avg_depth / 33.3 + 1) / time, 2)
+  def calculateSCR(self, gas_volume, avg_depth, time):
+    return round(gas_volume / (avg_depth / 33.3 + 1) / time, 2)
+
+  # Calculate MOD
+  def calculateFswMod(self, percent, ppo2):
+    return ppo2 / (percent / 100)
+
+  # Convert ATA to FSW
+  def convertAtaToFsw(self, ata):
+    return (ata-1)*33.3
 
   # Plan Min Gas
   def planMinGas(self, max_depth, scr):
@@ -79,31 +83,3 @@ class DiveCalculator:
     #return math.ceil(scr * self.depthFswToATA(depth))
     return round(scr * self.depthFswToATA(depth), 2)
 
-
-dive_calculator = DiveCalculator()
-
-
-# Post dive
-print 'Calculations based on:'
-print 'Avg Depth: ' + str(avg_depth) + ' feet'
-print 'Gas Used:  ' + str(psi_start - psi_end) + ' PSI'
-print 'Voume used:' + str(dive_calculator.pressureToVolume(psi_start-psi_end , tank_type))
-print 'Tank Type: ' + str.upper(tank_type)
-print 'Dive Time: ' + str(time) + ' minutes'
-print '**********************'
-print 'SCR:       ' + "{:.2f}".format(dive_calculator.calculateSCR(psi_start - psi_end, avg_depth, time, 'hp100')) + ' ft3/min'
-print '----'
-print ''
-
-# Pre dive
-print 'Gas Planning / Min Gas:'
-for x in range(10,110,10):
-  min_gas = dive_calculator.roundUpPSI(dive_calculator.volumeToPressure(dive_calculator.planMinGas(x, dive_calculator.min_gas_scr), tank_type))
-  ppo2 = dive_calculator.calculatePPO2(o2Percent, x)
-  print str.upper(tank_type) + ' @ ' + str(x) +'ft: ' + str(min_gas)
-
-
-print '--------'
-print 'Gas Tracking:'
-for x in range(10,110,10):
-  print str(x) + 'ft: ' + str(int(dive_calculator.volumeToPressure(dive_calculator.planGas(x),tank_type))) + 'PSI/min'
