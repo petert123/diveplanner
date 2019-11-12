@@ -43,7 +43,7 @@ class DiveCalculator:
   # Plan Min Gas
   def planMinGas(self, max_depth, scr):
     consumption = scr * 2
-    averageATA  = self.depthFswToATA(max_depth) / 2
+    averageATA  = (1+self.depthFswToATA(max_depth)) / 2
     time        = max_depth / 10 + 1
     
     return math.ceil(consumption * averageATA * time)
